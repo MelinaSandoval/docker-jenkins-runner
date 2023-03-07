@@ -1,0 +1,39 @@
+version: "3"
+services:
+  hub:
+    image: selenium/hub:3.14
+  chrome:
+    image: selenium/node-chrome:3.14      
+    depends_on:
+      - hub
+    environment:
+      - HUB_HOST=hub
+  firefox:
+    image: selenium/node-firefox:3.14
+    shm_size: '1gb'   
+    depends_on:
+      - hub
+    environment:
+      - HUB_HOST=hub
+  discount-module:
+    image: melinasandoval/docker-jenkins-practice
+    depends_on:
+      - chrome
+      - firefox
+    environment:
+      - HUB_HOST=hub
+      - BROWSER=firefox
+      - MODULE=discount-module.xml
+    volumes:
+      - ./output/discount-module-result:/usr/share/test-output      
+  filter-module:
+    image: melinasandoval/docker-jenkins-practice
+    depends_on:
+      - chrome
+      - firefox
+    environment:
+      - HUB_HOST=hub
+      - BROWSER=chrome
+      - MODULE=filtering-module.xml
+    volumes:
+      - ./output/filter-module-result:/usr/share/test-output   
